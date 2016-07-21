@@ -1,29 +1,34 @@
+#!/usr/bin/python
+
 from osgeo import gdal
 from gdalconst import *
 import numpy as np
 import spectral as sp
 from PIL import Image
+import sys
+
+input = sys.argv
 
 #User defined variables
-path_to_source_raster = '/Users/Michael/Desktop/84land/out.tif'
-src_raster_num_bands = 4
-classification_images_num_bands = 4
-path_to_classification_images = '/Users/Michael/Desktop/84land/'
-list_classification_images = np.array(['cloud','shadow','water','rural','city','cloud2','rural2','city2'])
+path_to_source_raster = input[1]
+src_raster_num_bands = int(input[4])
+classification_images_num_bands = int(input[5])
+path_to_classification_images = input[2]
+list_classification_images = np.array(input[3].split(','))
 
 ####Make class mask array####
 ####THIS MUST BE ADDED TO WHEN YOU ADD A CLASSIFICATION IMAGE####
 ####ADD IMAGES TO THE END OF THE STRING LIST AND THE BOTTOM OF THIS LIST####
 ####SEE "class.txt" FILE FOR CLASS INDICES###
 zer = np.zeros((10,10))
+citymsk = zer + 5
+city2msk = zer + 5
 cloudmsk = zer + 1
+cloud2msk = np.zeros((200,10)) + 1
+ruralmsk = zer + 4
+rural2msk = np.zeros((50,10)) + 4
 shadowmsk = zer + 2
 watermsk = zer + 3
-ruralmsk = zer + 4
-citymsk = zer + 5
-cloud2msk = np.zeros((200,10)) + 1
-rural2msk = np.zeros((50,10)) + 4
-city2msk = zer + 5
 ###ADD NEW CLASS MASK ARRAYS BELOW HERE###
 
 

@@ -5,12 +5,12 @@ import spectral as sp
 from PIL import Image
 
 #User defined variables
-path_to_source_raster = '/Users/Michael/Desktop/84land/out.tif'
+path_to_source_raster = '/Users/Michael/Desktop/landuse/out.tif'
 src_raster_num_bands = 4
 classification_images_num_bands = 4
-path_to_classification_images = '/Users/Michael/Desktop/84land/classif/'
+path_to_classification_images = '/Users/Michael/Desktop/landuse/classif/'
 list_classification_images = np.array(['cloud','shadow','water','rural','city','cloud2','rural2','city2'])
-output_suffix = "_name"
+output_suffix = "_michael"
 
 ####Make class mask array####
 ####THIS MUST BE ADDED TO WHEN YOU ADD A CLASSIFICATION IMAGE####

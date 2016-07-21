@@ -6,13 +6,31 @@ from PIL import Image
 
 #User defined variables
 path_to_source_raster = '/Users/Michael/Desktop/84land/out.tif'
-pcls = '/Users/Michael/Desktop/84land/'
-lci = np.array(['cloud','shadow','water','rural','city','cloud2','rural2','city2'])
+src_raster_num_bands = 4
+classification_images_num_bands = 4
+path_to_classification_images = '/Users/Michael/Desktop/84land/'
+list_classification_images = np.array(['cloud','shadow','water','rural','city','cloud2','rural2','city2'])
+
+####Make class mask array####
+####THIS MUST BE ADDED TO WHEN YOU ADD A CLASSIFICATION IMAGE####
+####ADD IMAGES TO THE END OF THE STRING LIST AND THE BOTTOM OF THIS LIST####
+####SEE "class.txt" FILE FOR CLASS INDICES###
+zer = np.zeros((10,10))
+cloudmsk = zer + 1
+shadowmsk = zer + 2
+watermsk = zer + 3
+ruralmsk = zer + 4
+citymsk = zer + 5
+cloud2msk = np.zeros((200,10)) + 1
+rural2msk = np.zeros((50,10)) + 4
+city2msk = zer + 5
+###ADD NEW CLASS MASK ARRAYS BELOW HERE###
+
 
 #Generate classification image strings for later use
 mskstr = ''
 allstr = ''
-for i in lci:
+for i in list_classification_images:
 	mskstr = mskstr + i + 'msk,'
 	allstr = allstr + i + 'all,'
 
@@ -23,8 +41,8 @@ allstr = allstr[:-1]
 src_raster = gdal.Open(path_to_source_raster, GA_ReadOnly)
 
 #open the classification images
-for i in lci:
-	cmd1 = i + " = gdal.Open('" + pcls + i + ".tif')"
+for i in list_classification_images:
+	cmd1 = i + " = gdal.Open('" + path_to_classification_images + i + ".tif')"
 	exec cmd1
 
 #print some relevant things for fun
@@ -34,45 +52,38 @@ print 'Origin: ',src_raster.GetGeoTransform()[0],',',src_raster.GetGeoTransform(
 print 'Pixel Size: ',src_raster.GetGeoTransform()[1],',',src_raster.GetGeoTransform()[5]
 print 'Metadata: ',src_raster.GetMetadata()
 
-#Copy the source raster to a numpy array and save its size
-bar1 = np.array(src_raster.GetRasterBand(1).ReadAsArray())
-bar2 = np.array(src_raster.GetRasterBand(2).ReadAsArray())
-bar3 = np.array(src_raster.GetRasterBand(3).ReadAsArray())
-bar4 = np.array(src_raster.GetRasterBand(4).ReadAsArray())
-(m,n) = bar1.shape
+#Copy the source raster to a 3D numpy array and save its size
+cmd1 = ''
+cmd2 = 'barall = np.dstack(('
 
-#stack 2d arrays into one 3d
-barall = np.dstack((bar1,bar2,bar3,bar4))
+for i in range(src_raster_num_bands):
+	j = str(i + 1)
+	cmd1 = cmd1 + 'bar' + j + ' = np.array(src_raster.GetRasterBand(' + j + ').ReadAsArray())\n'
+	cmd2 = cmd2 + 'bar' + j + ','
+	
+exec cmd1
+cmd2 = cmd2 + '))'
+exec cmd2
+
+(m,n,x) = barall.shape
 
 #Copy the classification images into 3D numpy arrays
-for i in lci:
-	cmd1 = i + 'ar1 = np.array(' + i + '.GetRasterBand(1).ReadAsArray())'
-	cmd2 = i + 'ar2 = np.array(' + i + '.GetRasterBand(2).ReadAsArray())'
-	cmd3 = i + 'ar3 = np.array(' + i + '.GetRasterBand(3).ReadAsArray())'
-	cmd4 = i + 'ar4 = np.array(' + i + '.GetRasterBand(4).ReadAsArray())'
-	cmd5 = i + 'all = np.dstack((' + i + 'ar1,' + i + 'ar2,' + i + 'ar3,' + i + 'ar4))'
-	exec cmd1 
-	exec cmd2 
-	exec cmd3 
-	exec cmd4 
-	exec cmd5
+for i in list_classification_images:
+	cmd1 = ''
+	cmd2 = i + 'all = np.dstack(('
+	for q in range(classification_images_num_bands):
+		j = str(q + 1)
+		cmd1 = cmd1 + i + 'ar' + j + ' = np.array(' + i + '.GetRasterBand(' + j + ').ReadAsArray())\n'
+		cmd2 = cmd2 + i + 'ar' + j + ','
+	exec cmd1
+	cmd2 = cmd2 + '))'
+	exec cmd2
 
-#Concatenate the classification arrays
-cm1 = 'classar = np.concatenate((' + allstr + '))'
-exec cm1
-
-#Make class mask array
-zer = np.zeros((10,10))
-cloudmsk = zer + 1
-shadowmsk = zer + 2
-watermsk = zer + 3
-ruralmsk = zer + 4
-citymsk = zer + 5
-cloud2msk = np.zeros((200,10)) + 1
-rural2msk = np.zeros((50,10)) + 4
-city2msk = zer + 5
+#Concatenate the classification image arrays and mask arrays
 cm1 = 'maskar = np.concatenate((' + mskstr + '))'
+cm2 = 'classar = np.concatenate((' + allstr + '))'
 exec cm1
+exec cm2
 
 #Create training class and model
 trcls = sp.create_training_classes(classar,maskar)
@@ -205,20 +216,7 @@ rgbcom = np.dstack((r,g,b)).astype('uint8')
 mclimg = Image.fromarray(rgbcom)
 mclimg.save('mclimg.tif')
 
-#Palette experimentation
-#pal.putpalette([
-#    255,255,255, 
-#      0,255,255, 
-#    255,  0,255, 
-#    255,255,  0,
-#    255,  0,  0,
-#      0,255,  0,
-#    
-#])
 
-#sp.imshow(classes=j) #show unsupervised
-#sp.imshow(classes=gclmap) #show gaussian supervised
-#sp.imshow(classes=mclmap) #show other supervised
 
 
 

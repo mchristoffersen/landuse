@@ -86,12 +86,12 @@ exec cm1
 exec cm2
 
 #Adjust (either zero-pad or cut) classification array to work with source raster
-(cx,cy,cz) = maskar.shape
+(cx,cy) = maskar.shape
 if src_raster_num_bands > classification_images_num_bands:
+	zerar = np.zeros((cx,cy))
 	diff = src_raster_num_bands - classification_images_num_bands
-	for i in range(diff)
-		maskar = np.dstack((maskar,np.zeros((cx,cy)))
-		classar = np.dstack((classar,np.zeros((cx,cy)))
+	for i in range(diff):
+		classar = np.dstack((classar,zerar))
 
 #Create training class and model
 trcls = sp.create_training_classes(classar,maskar)

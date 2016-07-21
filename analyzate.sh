@@ -2,7 +2,7 @@
 
 fend=".tif"
 
-cmd="$1/gdal_merge.py -seperate -v "
+cmd="$1/gdal_merge.py -o $1/out.tif -seperate -v "
 
 for i in $( ls $1/*.TIF ); do
 	cmd="$cmd $i"

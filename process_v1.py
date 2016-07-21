@@ -8,13 +8,15 @@ from PIL import Image
 path_to_source_raster = '/Users/Michael/Desktop/84land/out.tif'
 src_raster_num_bands = 4
 classification_images_num_bands = 4
-path_to_classification_images = '/Users/Michael/Desktop/84land/'
+path_to_classification_images = '/Users/Michael/Desktop/84land/classif/'
 list_classification_images = np.array(['cloud','shadow','water','rural','city','cloud2','rural2','city2'])
+output_suffix = "_name"
 
 ####Make class mask array####
 ####THIS MUST BE ADDED TO WHEN YOU ADD A CLASSIFICATION IMAGE####
-####ADD IMAGES TO THE END OF THE STRING LIST AND THE BOTTOM OF THIS LIST####
-####SEE "class.txt" FILE FOR CLASS INDICES###
+####SEE "class.txt" FILE FOR CLASS INDICES####
+###NAME MUST BE IN THE FORMAT (namefromlist)msk###
+###ALL CLASSIFICATION IMAGES MUST HAVE EQUAL NUMBER OF COLUMNS###
 zer = np.zeros((10,10))
 cloudmsk = zer + 1
 shadowmsk = zer + 2
@@ -24,8 +26,6 @@ citymsk = zer + 5
 cloud2msk = np.zeros((200,10)) + 1
 rural2msk = np.zeros((50,10)) + 4
 city2msk = zer + 5
-###ADD NEW CLASS MASK ARRAYS BELOW HERE###
-
 
 #Generate classification image strings for later use
 mskstr = ''
@@ -75,6 +75,7 @@ for i in list_classification_images:
 		j = str(q + 1)
 		cmd1 = cmd1 + i + 'ar' + j + ' = np.array(' + i + '.GetRasterBand(' + j + ').ReadAsArray())\n'
 		cmd2 = cmd2 + i + 'ar' + j + ','
+		
 	exec cmd1
 	cmd2 = cmd2 + '))'
 	exec cmd2
@@ -85,7 +86,7 @@ cm2 = 'classar = np.concatenate((' + allstr + '))'
 exec cm1
 exec cm2
 
-#Adjust (either zero-pad or cut) classification array to work with source raster
+#Adjust (zero-pad) classification array to work with source raster with more bands
 (cx,cy) = maskar.shape
 if src_raster_num_bands > classification_images_num_bands:
 	zerar = np.zeros((cx,cy))
@@ -176,7 +177,7 @@ for i in range(m):
 		
 rgbcom = np.dstack((r,g,b)).astype('uint8')
 kclimg = Image.fromarray(rgbcom)
-kclimg.save('kclimg.tif')
+kclimg.save('kclimg' + output_suffix + '.tif')
 	
 
 #Convert gaussian mean array
@@ -199,7 +200,7 @@ for i in range(m):
 		
 rgbcom = np.dstack((r,g,b)).astype('uint8')
 gclimg = Image.fromarray(rgbcom)
-gclimg.save('gclimg.tif')
+gclimg.save('gclimg' + output_suffix + '.tif')
 
 
 #Convert mahalanobis array
@@ -222,7 +223,7 @@ for i in range(m):
 		
 rgbcom = np.dstack((r,g,b)).astype('uint8')
 mclimg = Image.fromarray(rgbcom)
-mclimg.save('mclimg.tif')
+mclimg.save('mclimg' + output_suffix + '.tif')
 
 
 

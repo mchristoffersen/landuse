@@ -1,0 +1,1 @@
+Classification Images cropped from larger sattelite photos and classified by pixel

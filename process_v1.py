@@ -65,7 +65,7 @@ exec cmd1
 cmd2 = cmd2 + '))'
 exec cmd2
 
-(m,n) = barall.shape
+(m,n,x) = barall.shape
 
 #Copy the classification images into 3D numpy arrays
 for i in list_classification_images:

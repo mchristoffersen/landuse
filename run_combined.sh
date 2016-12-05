@@ -2,7 +2,7 @@
 
 fend=".tif"
 
-cmd="$1/gdal_merge.py -o $1/out.tif -seperate -v "
+cmd="gdal_merge.py -o $1/out.tif -seperate -v "
 
 for i in $( ls $1/*.TIF ); do
 	cmd="$cmd $i"
@@ -18,9 +18,9 @@ for i in $( ls $py2 ); do
 	py3="$py3,$i"
 done
 py3=${py3:1}
-py4=4
-py5=4
+py4=7
+py5=7
 
-$1/process_vbash.py $py1 $py2 $py3 $py4 $py5
+./process_vbash.py $py1 $py2 $py3 $py4 $py5
 
 

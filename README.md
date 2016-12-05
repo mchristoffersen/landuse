@@ -21,7 +21,7 @@ and will produce the output tiffs "kclimg.tif" from the k-means unsupervised cla
 
 The analyzate.sh script will takes the path to a folder with the band images, the process_vbash.py script, and the gdal_merge.py script as an argument and automates the process. It is buggy sometimes though. Usage is like this:
 
-./analyzate.sh /path/to/image/and/script/directory
+./run_combined.sh /path/to/image/and/script/directory
 
 The script will not work if the process_vbash.py and gdal_merge.py scripts are not in the given directory along with the images.
 

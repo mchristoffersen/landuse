@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 from osgeo import gdal
 from gdalconst import *
 import numpy as np
@@ -16,19 +15,30 @@ classification_images_num_bands = int(input[5])
 path_to_classification_images = input[2]
 list_classification_images = np.array(input[3].split(','))
 
+path_to_output = path_to_source_raster[:-7]
+
 ####Make class mask array####
 ####THIS MUST BE ADDED TO WHEN YOU ADD A CLASSIFICATION IMAGE####
 ####ADD IMAGES TO THE END OF THE STRING LIST AND THE BOTTOM OF THIS LIST####
 ####SEE "class.txt" FILE FOR CLASS INDICES###
 zer = np.zeros((10,10))
-citymsk = zer + 5
-city2msk = zer + 5
-cloudmsk = zer + 1
-cloud2msk = np.zeros((200,10)) + 1
-ruralmsk = zer + 4
-rural2msk = np.zeros((50,10)) + 4
-shadowmsk = zer + 2
-watermsk = zer + 3
+#citymsk = zer
+#city2msk = zer
+#cloudmsk = zer + 1
+#cloud2msk = np.zeros((200,10)) + 1
+#ruralmsk = zer + 2
+#rural2msk = np.zeros((50,10)) + 2
+#shadowmsk = zer + 3
+#watermsk = zer + 4
+azer = np.zeros((335,10))
+agrimsk = azer + 1
+czer = np.zeros((248,10))
+citymsk = czer + 2
+#undevmsk = zer + 2
+wzer = np.zeros((175,10))
+watermsk = wzer + 3
+uzer = np.zeros((340,10))
+undevmsk = uzer + 4
 ###ADD NEW CLASS MASK ARRAYS BELOW HERE###
 
 
@@ -104,7 +114,7 @@ gmlc = sp.GaussianClassifier(trcls)
 mldc = sp.MahalanobisDistanceClassifier(trcls)
 
 #Classify image and display results
-(kclmap,c) = sp.kmeans(barall,12,20) #unsupervised
+(kclmap,c) = sp.kmeans(barall,12,30) #unsupervised
 gclmap = gmlc.classify_image(barall) #supervised
 mclmap = mldc.classify_image(barall) #supervised
 
@@ -167,21 +177,22 @@ g = np.array(kclmap).astype('uint8')
 b = np.array(kclmap).astype('uint8')
 
 print 'Kmeans Unsupervised Classification .tif Generation'
-pc = 0
-for i in range(m):
-	pcc = int(float(i)/m*100)
-	if pcc != pc:
-		pc = pcc
-		print str(pc) +'%'
+#pc = 0
+#for i in range(m):
+#	pcc = int(float(i)/m*100)
+#	if pcc != pc:
+#		pc = pcc
+#		sys.stdout.write("  " + str(pc) +'%\r')
+#		sys.stdout.flush()
 		
-	for j in range(n):
-		r[i][j] = num2colR(r[i][j])
-		g[i][j] = num2colG(g[i][j])
-		b[i][j] = num2colB(b[i][j])
+#	for j in range(n):
+#		r[i][j] = num2colR(r[i][j])
+#		g[i][j] = num2colG(g[i][j])
+#		b[i][j] = num2colB(b[i][j])
 		
-rgbcom = np.dstack((r,g,b)).astype('uint8')
-kclimg = Image.fromarray(rgbcom)
-kclimg.save('kclimg.tif')
+#rgbcom = np.dstack((r,g,b)).astype('uint8')
+#kclimg = Image.fromarray(rgbcom)
+#kclimg.save(path_to_output + 'kclimg.tif')
 	
 
 #Convert gaussian mean array
@@ -189,13 +200,16 @@ r = np.array(gclmap).astype('uint8')
 g = np.array(gclmap).astype('uint8')
 b = np.array(gclmap).astype('uint8')
 
+print '  100%'
+
 print 'Gaussian Mean Supervised Image Classification .tif Generation'
 pc = 0
 for i in range(m):
 	pcc = int(float(i)/m*100)
 	if pcc != pc:
 		pc = pcc
-		print str(pc) + '%'
+		sys.stdout.write("  " + str(pc) +'%\r')
+		sys.stdout.flush()
 		
 	for j in range(n):
 		r[i][j] = num2colR(r[i][j])
@@ -204,7 +218,9 @@ for i in range(m):
 		
 rgbcom = np.dstack((r,g,b)).astype('uint8')
 gclimg = Image.fromarray(rgbcom)
-gclimg.save('gclimg.tif')
+gclimg.save(path_to_output + 'gclimg.tif')
+
+print '  100%'
 
 
 #Convert mahalanobis array
@@ -218,8 +234,9 @@ for i in range(m):
 	pcc = int(float(i)/m*100)
 	if pcc != pc:
 		pc = pcc
-		print str(pc) + '%'
-		
+		sys.stdout.write("  " + str(pc) +'%\r')
+		sys.stdout.flush()
+				
 	for j in range(n):
 		r[i][j] = num2colR(r[i][j])
 		g[i][j] = num2colG(g[i][j])
@@ -227,7 +244,9 @@ for i in range(m):
 		
 rgbcom = np.dstack((r,g,b)).astype('uint8')
 mclimg = Image.fromarray(rgbcom)
-mclimg.save('mclimg.tif')
+mclimg.save(path_to_output + 'mclimg.tif')
+
+print '  100%'
 
 
 

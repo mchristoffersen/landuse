@@ -3,6 +3,8 @@ Landuse and patten recognition project
 
 This is a set of scripts to perform land use classification on multi-spectral aerial imagery. 
 
+[![DOI](https://zenodo.org/badge/63271494.svg)](https://zenodo.org/badge/latestdoi/63271494)
+
 ##Usage##
 
 Necessary libraries: GDAL, Spectral Python, Numpy, Python Imaging Library

@@ -1,5 +1,8 @@
 #Mac Stuff
 .DS_Store
 
-#Combined example tif
-out.tif
+#Output TIFFs
+kclimg.tif
+gclimg.tif
+mclimg.tif
+

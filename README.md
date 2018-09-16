@@ -29,9 +29,7 @@ python ./sample_input/output.tif ./sample_input/training.txt
 
 The script will run and save an image for each classification.
 
-
-Coming soon:
-
-Georeferenced output
-Getting rid of Spectral Python (seems to be dead) probably replacing it with scikit-learn
-Better documentation
+Coming soon:   
+Georeferenced output   
+Getting rid of Spectral Python (seems to be dead) probably replacing it with scikit-learn   
+Better documentation   

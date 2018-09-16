@@ -1,0 +1,8 @@
+/home/mchristo/project/landuse/sample_input/classif/city.tif,1
+/home/mchristo/project/landuse/sample_input/classif/city2.tif,1
+/home/mchristo/project/landuse/sample_input/classif/cloud.tif,2
+/home/mchristo/project/landuse/sample_input/classif/cloud2.tif,2
+/home/mchristo/project/landuse/sample_input/classif/rural.tif,3
+/home/mchristo/project/landuse/sample_input/classif/rural2.tif,3
+/home/mchristo/project/landuse/sample_input/classif/shadow.tif,4
+/home/mchristo/project/landuse/sample_input/classif/water.tif,5
